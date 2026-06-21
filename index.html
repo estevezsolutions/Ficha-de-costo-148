@@ -4,24 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Ficha de Costos - Resolución 148/2023</title>
-    <!-- Bootstrap 5 desde CDN -->
+    <!-- Bootstrap 5 y Font Awesome -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Estilos personalizados */
         body {
             background-color: #f8f9fa;
             padding-bottom: 2rem;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin-top: 20px;
         }
         .card {
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
         .card-header {
             background-color: #0d6efd;
@@ -29,9 +27,37 @@
             font-weight: bold;
             border-radius: 12px 12px 0 0 !important;
             cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
         }
         .card-header i {
-            margin-right: 10px;
+            margin-right: 8px;
+        }
+        .card-header .badge {
+            background-color: #ffc107;
+            color: #212529;
+            font-size: 0.7rem;
+        }
+        .help-icon {
+            color: #ffc107;
+            cursor: pointer;
+            margin-left: 6px;
+            font-size: 0.9rem;
+        }
+        .help-text {
+            background-color: #fef9e7;
+            border-left: 4px solid #ffc107;
+            padding: 8px 12px;
+            margin-top: 6px;
+            margin-bottom: 6px;
+            font-size: 0.85rem;
+            border-radius: 4px;
+            display: none;
+        }
+        .help-text.show {
+            display: block;
         }
         .table-responsive {
             overflow-x: auto;
@@ -40,15 +66,15 @@
             margin-top: 5px;
         }
         .resultado {
-            background-color: #e9ecef;
+            background-color: #ffffff;
             padding: 15px;
             border-radius: 8px;
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
+            border: 1px solid #dee2e6;
         }
         .resultado table {
             width: 100%;
             border-collapse: collapse;
+            font-size: 0.9rem;
         }
         .resultado td, .resultado th {
             border: 1px solid #dee2e6;
@@ -57,6 +83,9 @@
         .resultado .total {
             font-weight: bold;
             background-color: #d1e7dd;
+        }
+        .resultado .subtotal {
+            background-color: #e9ecef;
         }
         .badge-warning {
             background-color: #ffc107;
@@ -68,12 +97,6 @@
             color: #6c757d;
             font-size: 0.8rem;
         }
-        /* Para móvil: botones más grandes */
-        .btn-lg-mobile {
-            font-size: 1.1rem;
-            padding: 10px 16px;
-        }
-        /* Ocultar columnas de acción en impresión */
         @media print {
             .no-print {
                 display: none !important;
@@ -83,6 +106,21 @@
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
+            .help-text {
+                display: none !important;
+            }
+        }
+        /* Mobile friendly */
+        .btn-lg-mobile {
+            font-size: 1.1rem;
+            padding: 10px 16px;
+        }
+        .input-group-text {
+            min-width: 30px;
+            justify-content: center;
+        }
+        .tabla-fila input {
+            min-width: 60px;
         }
     </style>
 </head>
@@ -90,13 +128,13 @@
     <div class="container">
         <h1 class="text-center mb-4">Ficha de Costos y Gastos <br><small class="text-muted">Resolución 148/2023</small></h1>
         
-        <!-- Formulario principal -->
         <form id="fichaForm" class="needs-validation" novalidate>
 
-            <!-- ====== DATOS GENERALES ====== -->
+            <!-- ================== DATOS GENERALES ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseGenerales" aria-expanded="true">
-                    <i class="fas fa-info-circle"></i> Datos Generales
+                    <span><i class="fas fa-info-circle"></i> Datos Generales</span>
+                    <span class="badge">Obligatorio</span>
                 </div>
                 <div id="collapseGenerales" class="collapse show">
                     <div class="card-body">
@@ -140,14 +178,21 @@
                 </div>
             </div>
 
-            <!-- ====== INSUMOS ====== -->
+            <!-- ================== INSUMOS ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseInsumos" aria-expanded="true">
-                    <i class="fas fa-cubes"></i> Insumos (Materias primas y materiales)
+                    <span><i class="fas fa-cubes"></i> Insumos (Materias primas y materiales)</span>
+                    <span class="badge">Art. 5</span>
                 </div>
                 <div id="collapseInsumos" class="collapse show">
                     <div class="card-body">
-                        <p class="text-muted">Agregue todos los insumos necesarios para el producto/servicio.</p>
+                        <p class="text-muted">
+                            Agregue todos los insumos necesarios.
+                            <span class="help-icon" data-target="helpInsumos"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpInsumos" class="help-text">
+                            <strong>Resolución 148, Artículo 5:</strong> "Es de obligatorio cumplimiento la desagregación de los principales insumos... para la determinación de las Fichas, excepto en los casos en que la retribución no sea por concepto de salario o no forme parte del costo. Para ello, se elaboran los anexos complementarios a partir de lo establecido en la Carta Tecnológica..."
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm" id="tablaInsumos">
                                 <thead class="table-light">
@@ -160,9 +205,7 @@
                                         <th style="width:50px;">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody id="bodyInsumos">
-                                    <!-- Filas se agregan dinámicamente con JavaScript -->
-                                </tbody>
+                                <tbody id="bodyInsumos"></tbody>
                             </table>
                         </div>
                         <button type="button" class="btn btn-success btn-sm no-print" id="agregarInsumo"><i class="fas fa-plus"></i> Agregar insumo</button>
@@ -170,21 +213,28 @@
                 </div>
             </div>
 
-            <!-- ====== SALARIO DIRECTO ====== -->
+            <!-- ================== SALARIO DIRECTO ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseSalario" aria-expanded="true">
-                    <i class="fas fa-users"></i> Mano de obra directa (Salario)
+                    <span><i class="fas fa-users"></i> Mano de obra directa (Salario)</span>
+                    <span class="badge">Art. 5</span>
                 </div>
                 <div id="collapseSalario" class="collapse show">
                     <div class="card-body">
-                        <p class="text-muted">Detalle de las operaciones con su tiempo y salario por hora.</p>
+                        <p class="text-muted">
+                            Detalle de las operaciones con su tiempo y salario por hora.
+                            <span class="help-icon" data-target="helpSalario"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpSalario" class="help-text">
+                            <strong>Resolución 148, Artículo 5:</strong> "...desagregación del gasto de salario directo o retribución por el trabajo directo en los procesos productivos y de servicios... Para ello, se elaboran los anexos complementarios a partir de lo establecido en la Carta Tecnológica..."
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm" id="tablaSalario">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Operación</th>
                                         <th>Cant. trabajadores</th>
-                                        <th>Categoría ocupacional</th>
+                                        <th>Categoría</th>
                                         <th>Grupo escala</th>
                                         <th>Salario x hora ($)</th>
                                         <th>Pagos adicionales ($/hora)</th>
@@ -192,9 +242,7 @@
                                         <th style="width:50px;">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody id="bodySalario">
-                                    <!-- Filas dinámicas -->
-                                </tbody>
+                                <tbody id="bodySalario"></tbody>
                             </table>
                         </div>
                         <button type="button" class="btn btn-success btn-sm no-print" id="agregarSalario"><i class="fas fa-plus"></i> Agregar operación</button>
@@ -202,13 +250,21 @@
                 </div>
             </div>
 
-            <!-- ====== OTROS GASTOS DIRECTOS ====== -->
+            <!-- ================== OTROS GASTOS DIRECTOS ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseOtrosDirectos" aria-expanded="true">
-                    <i class="fas fa-truck"></i> Otros Gastos Directos
+                    <span><i class="fas fa-truck"></i> Otros Gastos Directos</span>
+                    <span class="badge">Art. 5</span>
                 </div>
                 <div id="collapseOtrosDirectos" class="collapse show">
                     <div class="card-body">
+                        <p class="text-muted">
+                            Incluye depreciación de activos que intervienen directamente, arrendamientos, transportes, etc.
+                            <span class="help-icon" data-target="helpOtrosDirectos"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpOtrosDirectos" class="help-text">
+                            <strong>Resolución 148, Fila 3:</strong> "Otros gastos directos: Incluye los conceptos de gastos directos o identificables con una producción o servicio, entre los cuales se encuentran: los pagos por mantenimientos y reparaciones recibidos; la Depreciación de los activos fijos tangibles que intervienen directamente en el proceso y la amortización de activos fijos intangibles..."
+                        </div>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="transporteSuministros" class="form-label">Transporte de suministros</label>
@@ -253,8 +309,8 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <label for="otrosDirectos" class="form-label">Otros gastos directos (especificar)</label>
-                                <input type="text" class="form-control" id="descOtrosDirectos" placeholder="Ej: Seguros, patentes...">
+                                <label for="otrosDirectosDesc" class="form-label">Otros gastos directos (especificar)</label>
+                                <input type="text" class="form-control" id="otrosDirectosDesc" placeholder="Ej: Seguros, patentes...">
                             </div>
                             <div class="col-md-6">
                                 <label for="montoOtrosDirectos" class="form-label">Monto ($)</label>
@@ -268,14 +324,21 @@
                 </div>
             </div>
 
-            <!-- ====== DEPRECIACIÓN ====== -->
+            <!-- ================== DEPRECIACIÓN ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseDepreciacion" aria-expanded="true">
-                    <i class="fas fa-tools"></i> Depreciación de Activos Fijos Tangibles (AFT)
+                    <span><i class="fas fa-tools"></i> Depreciación de Activos Fijos Tangibles (AFT)</span>
+                    <span class="badge">Art. 5</span>
                 </div>
                 <div id="collapseDepreciacion" class="collapse show">
                     <div class="card-body">
-                        <p class="text-muted">Equipos que intervienen directamente en el proceso productivo.</p>
+                        <p class="text-muted">
+                            Equipos que intervienen directamente en el proceso productivo.
+                            <span class="help-icon" data-target="helpDepreciacion"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpDepreciacion" class="help-text">
+                            <strong>Resolución 148, Fila 3:</strong> "...Depreciación de los activos fijos tangibles que intervienen directamente en el proceso y la amortización de activos fijos intangibles, así como otros conceptos definidos en las normas contables."
+                        </div>
                         <div class="table-responsive">
                             <table class="table table-bordered table-sm" id="tablaDepreciacion">
                                 <thead class="table-light">
@@ -288,9 +351,7 @@
                                         <th style="width:50px;">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody id="bodyDepreciacion">
-                                    <!-- Filas dinámicas -->
-                                </tbody>
+                                <tbody id="bodyDepreciacion"></tbody>
                             </table>
                         </div>
                         <button type="button" class="btn btn-success btn-sm no-print" id="agregarDepreciacion"><i class="fas fa-plus"></i> Agregar activo</button>
@@ -298,14 +359,21 @@
                 </div>
             </div>
 
-            <!-- ====== GASTOS INDIRECTOS (distribución) ====== -->
+            <!-- ================== GASTOS INDIRECTOS ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseIndirectos" aria-expanded="true">
-                    <i class="fas fa-chart-pie"></i> Gastos Indirectos (distribución)
+                    <span><i class="fas fa-chart-pie"></i> Gastos Indirectos</span>
+                    <span class="badge">Art. 9</span>
                 </div>
                 <div id="collapseIndirectos" class="collapse show">
                     <div class="card-body">
-                        <p class="text-muted">Distribuya los gastos indirectos totales (dentro del tope permitido) entre las tres categorías.</p>
+                        <p class="text-muted">
+                            Distribuya los gastos indirectos totales (dentro del tope permitido) entre las tres categorías.
+                            <span class="help-icon" data-target="helpIndirectos"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpIndirectos" class="help-text">
+                            <strong>Resolución 148, Artículo 9:</strong> "Se establece como norma, el Coeficiente Máximo de Gastos Indirectos de hasta 1,5 veces en las actividades de producción y hasta de 1,0 veces en las actividades de servicios, el cual se aplica sobre el gasto de salario directo para definir la cuantía total de los Gastos Indirectos que se utilizan en la confección de la Ficha. Dicho monto se distribuye entre las tres clasificaciones de Gastos Indirectos, en correspondencia con su participación en el proceso productivo o de servicios."
+                        </div>
                         <div class="alert alert-info">
                             <strong>Tope máximo:</strong> <span id="topeIndirectos">0.00</span> (calculado como <span id="coeficienteTexto">1.5</span> × salario directo total)
                         </div>
@@ -328,13 +396,21 @@
                 </div>
             </div>
 
-            <!-- ====== GASTOS FINANCIEROS Y OTROS ====== -->
+            <!-- ================== GASTOS FINANCIEROS Y OTROS ================== -->
             <div class="card">
                 <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseFinancieros" aria-expanded="true">
-                    <i class="fas fa-coins"></i> Gastos Financieros y otros
+                    <span><i class="fas fa-coins"></i> Gastos Financieros y otros</span>
+                    <span class="badge">Art. 10</span>
                 </div>
                 <div id="collapseFinancieros" class="collapse show">
                     <div class="card-body">
+                        <p class="text-muted">
+                            Intereses, comisiones, primas de seguro y financiamiento a OSDE.
+                            <span class="help-icon" data-target="helpFinancieros"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpFinancieros" class="help-text">
+                            <strong>Resolución 148, Filas 8 y 9:</strong> "Gastos financieros: Comprende los gastos en que se incurra, por las operaciones financieras relacionadas con la producción o servicio... Gastos por financiamiento a la OSDE: Los gastos corrientes de las organizaciones superiores de dirección empresarial se financian a través de los aportes que con cargo a sus gastos realizan las entidades que la integran..."
+                        </div>
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="gastosFinancieros" class="form-label">Gastos Financieros (intereses, comisiones, primas)</label>
@@ -355,14 +431,64 @@
                 </div>
             </div>
 
-            <!-- ====== BOTONES DE ACCIÓN ====== -->
+            <!-- ================== TRIBUTOS ================== -->
+            <div class="card">
+                <div class="card-header" data-bs-toggle="collapse" data-bs-target="#collapseTributos" aria-expanded="true">
+                    <span><i class="fas fa-file-invoice-dollar"></i> Gastos Tributarios</span>
+                    <span class="badge">Art. 10</span>
+                </div>
+                <div id="collapseTributos" class="collapse show">
+                    <div class="card-body">
+                        <p class="text-muted">
+                            Se calculan automáticamente sobre la base salarial (directo + indirecto estimado).
+                            <span class="help-icon" data-target="helpTributos"><i class="fas fa-question-circle"></i></span>
+                        </p>
+                        <div id="helpTributos" class="help-text">
+                            <strong>Resolución 148, Fila 10:</strong> "Se consignan los importes que corresponden a los tributos Contribución a la Seguridad Social e Impuesto sobre la Utilización de la Fuerza de Trabajo, cuya base imponible es la suma del salario directo e indirecto, a la cual se le aplica el tipo impositivo aprobado para cada tributo, de acuerdo con la legislación tributaria."
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label>Contribución a la Seguridad Social (12.5%)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" id="contribSeguridad" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Impuesto UFT (5%)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" id="impuestoUFT" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label>Contribución Especial (1.5%)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" id="contribEspecial" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <label>Total Tributarios</label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    <input type="text" class="form-control" id="totalTributarios" readonly>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================== BOTONES ================== -->
             <div class="d-grid gap-2 d-md-flex justify-content-md-center no-print">
                 <button type="button" class="btn btn-primary btn-lg-mobile me-md-2" id="btnCalcular"><i class="fas fa-calculator"></i> Calcular</button>
                 <button type="button" class="btn btn-secondary btn-lg-mobile" id="btnLimpiar"><i class="fas fa-undo"></i> Limpiar</button>
             </div>
+
         </form>
 
-        <!-- ====== RESULTADOS ====== -->
+        <!-- ================== RESULTADOS ================== -->
         <div id="resultado" class="resultado mt-4" style="display:none;">
             <h4 class="text-center">Ficha de Costos y Gastos</h4>
             <div id="fichaResultado"></div>
@@ -374,16 +500,14 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS y Popper -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         // ============================================================
-        //  JAVASCRIPT - LÓGICA COMPLETA
+        //  JAVASCRIPT COMPLETO
         // ============================================================
 
         // --- Datos iniciales de ejemplo (insumos, salario, depreciación) ---
-        // Los valores están tomados del Excel que proporcionaste.
-
         const insumosIniciales = [
             { codigo: '', descripcion: 'Inversor 12 kw PV39-12048 TLV', um: 'U', cantidad: 2, precio: 1528279.50 },
             { codigo: '', descripcion: 'Bateria 48V 300Ah (15Kwh) LP-48200', um: 'U', cantidad: 4, precio: 1389312.375 },
@@ -401,11 +525,7 @@
             { operacion: 'Montaje de inversor', cant: 4, categoria: '', grupo: '', salarioHora: 28.645, pagosAdicionales: 298560, norma: 40 },
             { operacion: 'Montaje de estructura', cant: 4, categoria: '', grupo: '', salarioHora: 28.645, pagosAdicionales: 298560, norma: 80 },
             { operacion: 'Cableado', cant: 4, categoria: '', grupo: '', salarioHora: 28.645, pagosAdicionales: 298560, norma: 24 },
-            { operacion: 'Montaje de Baterias', cant: 4, categoria: '', grupo: '', salarioHora: 28.645, pagosAdicionales: 298560, norma: 16 },
-            // Personal administrativo (no es directo, pero lo incluimos como ejemplo; en la ficha no debe ir aquí, pero lo dejamos para mostrar)
-            // Nota: según la resolución, el salario indirecto (administrativo) va en gastos indirectos, no en directo.
-            // Por eso en este ejemplo solo pondremos operaciones directas, aunque el Excel original incluía administrador, jefe, etc.
-            // Para ser fiel a la resolución, los dejamos fuera. Si el usuario quiere incluirlos, debe hacerlo en los gastos indirectos.
+            { operacion: 'Montaje de Baterias', cant: 4, categoria: '', grupo: '', salarioHora: 28.645, pagosAdicionales: 298560, norma: 16 }
         ];
 
         const depreciacionInicial = [
@@ -414,7 +534,7 @@
             { descripcion: 'Pulidor maquita', valor: 23000, cantidad: 1, tasa: 6, horas: 120 }
         ];
 
-        // --- Referencias a elementos del DOM ---
+        // --- Referencias DOM ---
         const bodyInsumos = document.getElementById('bodyInsumos');
         const bodySalario = document.getElementById('bodySalario');
         const bodyDepreciacion = document.getElementById('bodyDepreciacion');
@@ -424,10 +544,10 @@
         const btnCalcular = document.getElementById('btnCalcular');
         const btnLimpiar = document.getElementById('btnLimpiar');
 
-        // --- Funciones para agregar filas dinámicas ---
-
+        // --- Funciones para agregar filas ---
         function agregarFilaInsumo(data = {}) {
             const row = document.createElement('tr');
+            row.className = 'tabla-fila';
             row.innerHTML = `
                 <td><input type="text" class="form-control form-control-sm" value="${data.codigo || ''}"></td>
                 <td><input type="text" class="form-control form-control-sm" value="${data.descripcion || ''}"></td>
@@ -441,6 +561,7 @@
 
         function agregarFilaSalario(data = {}) {
             const row = document.createElement('tr');
+            row.className = 'tabla-fila';
             row.innerHTML = `
                 <td><input type="text" class="form-control form-control-sm" value="${data.operacion || ''}"></td>
                 <td><input type="number" class="form-control form-control-sm" value="${data.cant || 0}" step="any" min="0"></td>
@@ -456,6 +577,7 @@
 
         function agregarFilaDepreciacion(data = {}) {
             const row = document.createElement('tr');
+            row.className = 'tabla-fila';
             row.innerHTML = `
                 <td><input type="text" class="form-control form-control-sm" value="${data.descripcion || ''}"></td>
                 <td><input type="number" class="form-control form-control-sm" value="${data.valor || 0}" step="any" min="0"></td>
@@ -469,18 +591,16 @@
 
         // --- Cargar datos iniciales ---
         function cargarDatosIniciales() {
-            // Limpiar tablas
             bodyInsumos.innerHTML = '';
             bodySalario.innerHTML = '';
             bodyDepreciacion.innerHTML = '';
-            // Agregar filas
             insumosIniciales.forEach(d => agregarFilaInsumo(d));
             salarioInicial.forEach(d => agregarFilaSalario(d));
             depreciacionInicial.forEach(d => agregarFilaDepreciacion(d));
         }
         cargarDatosIniciales();
 
-        // --- Eventos para agregar filas ---
+        // --- Eventos para agregar ---
         btnAgregarInsumo.addEventListener('click', () => agregarFilaInsumo({}));
         btnAgregarSalario.addEventListener('click', () => agregarFilaSalario({}));
         btnAgregarDepreciacion.addEventListener('click', () => agregarFilaDepreciacion({}));
@@ -493,7 +613,19 @@
             }
         });
 
-        // --- Función para leer datos de las tablas ---
+        // --- Ayuda contextual (mostrar/ocultar texto) ---
+        document.querySelectorAll('.help-icon').forEach(icon => {
+            icon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const targetId = this.dataset.target;
+                const helpDiv = document.getElementById(targetId);
+                if (helpDiv) {
+                    helpDiv.classList.toggle('show');
+                }
+            });
+        });
+
+        // --- Funciones de lectura de datos ---
         function leerInsumos() {
             const rows = bodyInsumos.querySelectorAll('tr');
             const data = [];
@@ -561,60 +693,53 @@
             const nivelProduccion = parseFloat(document.getElementById('nivelProduccion').value) || 1;
             const tipoActividad = document.getElementById('tipoActividad').value;
 
-            // Obtener coeficiente de gastos indirectos y utilidad
+            // Coeficiente y utilidad
             let coeficienteIndirectos = 0;
             let tasaUtilidad = 0;
-            let textoCoeficiente = '';
             let textoActividad = '';
             switch (tipoActividad) {
                 case 'produccion':
                     coeficienteIndirectos = 1.5;
                     tasaUtilidad = 0.25;
-                    textoCoeficiente = '1.5 (producción)';
                     textoActividad = 'Producción de bienes (no agropecuaria, no alta tecnología)';
                     break;
                 case 'servicios':
                     coeficienteIndirectos = 1.0;
                     tasaUtilidad = 0.15;
-                    textoCoeficiente = '1.0 (servicios)';
                     textoActividad = 'Servicios y comercialización';
                     break;
                 case 'agropecuaria':
-                    coeficienteIndirectos = 1.5; // asumimos que aplica el mismo 1.5 (la resolución no lo especifica, pero es producción)
+                    coeficienteIndirectos = 1.5;
                     tasaUtilidad = 0.30;
-                    textoCoeficiente = '1.5 (producción agropecuaria)';
                     textoActividad = 'Producción agropecuaria';
                     break;
                 case 'altaTecnologia':
-                    coeficienteIndirectos = 1.5; // asumimos
+                    coeficienteIndirectos = 1.5;
                     tasaUtilidad = 0.30;
-                    textoCoeficiente = '1.5 (alta tecnología)';
                     textoActividad = 'Alta tecnología, informática, ciencia e investigación';
                     break;
                 default:
                     coeficienteIndirectos = 1.5;
                     tasaUtilidad = 0.25;
-                    textoCoeficiente = '1.5 (por defecto)';
                     textoActividad = 'No especificada';
             }
 
-            // Leer insumos
+            // Insumos
             const insumos = leerInsumos();
             let totalInsumos = 0;
             insumos.forEach(item => {
                 totalInsumos += item.cantidad * item.precio;
             });
 
-            // Leer salario directo
+            // Salario directo
             const salarios = leerSalario();
             let totalSalarioDirecto = 0;
             salarios.forEach(item => {
-                // Gasto de salario por operación = cant * (salarioHora + pagosAdicionales) * norma
                 const gasto = item.cant * (item.salarioHora + item.pagosAdicionales) * item.norma;
                 totalSalarioDirecto += gasto;
             });
 
-            // Leer otros gastos directos
+            // Otros directos
             const transporteSum = parseFloat(document.getElementById('transporteSuministros').value) || 0;
             const alimentacion = parseFloat(document.getElementById('alimentacion').value) || 0;
             const transporteTra = parseFloat(document.getElementById('transporteTrabajadores').value) || 0;
@@ -622,46 +747,34 @@
             const arrendamiento = parseFloat(document.getElementById('arrendamiento').value) || 0;
             const subcontratacion = parseFloat(document.getElementById('subcontratacion').value) || 0;
             const montoOtros = parseFloat(document.getElementById('montoOtrosDirectos').value) || 0;
-
             const totalOtrosDirectos = transporteSum + alimentacion + transporteTra + combustible + arrendamiento + subcontratacion + montoOtros;
 
-            // Leer depreciación
+            // Depreciación directa
             const depreciaciones = leerDepreciacion();
             let totalDepreciacionDirecta = 0;
             depreciaciones.forEach(item => {
-                // Depreciación por hora = ((valor * tasa%) / 365 / 24) * horas * cantidad
-                // Simplificamos: depreciación anual = valor * (tasa/100) * cantidad, luego prorrateamos por horas? 
-                // La resolución no especifica un método exacto, usamos el que viene en el Excel: 
-                // depreciación por horas = ((valor * tasa%) / 12 / 24) * horas * cantidad / 8? 
-                // Mejor usamos el cálculo del Excel: =((((C11*E11%)/12)/24)*F11/8)*D11  (eso es depreciación mensual? 
-                // Para simplificar, calculamos la depreciación anual y la dividimos entre las horas totales del año (asumimos 2000 horas).
-                // Pero el Excel usa un cálculo más complejo. Vamos a replicar el cálculo del Excel tal cual:
-                // depreciación por hora = ((valor * tasa% / 12) / 24) * horas / 8 * cantidad
-                // Eso da el gasto total para esas horas.
+                // Fórmula: ((valor * tasa%) / 12 / 24) * (horas / 8) * cantidad
                 const valor = item.valor;
                 const cantidad = item.cantidad;
                 const tasa = item.tasa / 100;
                 const horas = item.horas;
-                // Cálculo según Excel: (((valor * tasa) / 12) / 24) * (horas / 8) * cantidad
-                // Nota: el Excel divide horas/8 (asume jornada de 8h) 
                 const depreciacion = ((valor * tasa / 12) / 24) * (horas / 8) * cantidad;
                 totalDepreciacionDirecta += depreciacion;
             });
 
-            // Calcular tope de gastos indirectos
+            // Tope indirectos
             const topeIndirectos = totalSalarioDirecto * coeficienteIndirectos;
 
-            // Leer gastos indirectos ingresados por el usuario
+            // Leer indirectos ingresados
             let indProduccion = parseFloat(document.getElementById('indirectosProduccion').value) || 0;
             let indAdministracion = parseFloat(document.getElementById('indirectosAdministracion').value) || 0;
             let indDistribucion = parseFloat(document.getElementById('indirectosDistribucion').value) || 0;
             let totalIndirectosIngresados = indProduccion + indAdministracion + indDistribucion;
 
-            // Validar tope
+            // Validar tope y ajustar
             let alertaMsg = '';
             if (totalIndirectosIngresados > topeIndirectos) {
-                alertaMsg = `⚠️ Los gastos indirectos ingresados (${totalIndirectosIngresados.toFixed(2)}) superan el tope máximo permitido (${topeIndirectos.toFixed(2)}). Se ajustarán automáticamente al tope.`;
-                // Ajuste proporcional
+                alertaMsg = `⚠️ Los gastos indirectos ingresados (${totalIndirectosIngresados.toFixed(2)}) superan el tope máximo (${topeIndirectos.toFixed(2)}). Se ajustarán automáticamente al tope.`;
                 const factor = topeIndirectos / totalIndirectosIngresados;
                 indProduccion *= factor;
                 indAdministracion *= factor;
@@ -676,109 +789,63 @@
             document.getElementById('topeIndirectos').textContent = topeIndirectos.toFixed(2);
             document.getElementById('coeficienteTexto').textContent = coeficienteIndirectos;
 
-            // Leer gastos financieros y otros
+            // Gastos financieros y OSDE
             const gastosFinancieros = parseFloat(document.getElementById('gastosFinancieros').value) || 0;
             const financiamientoOSDE = parseFloat(document.getElementById('financiamientoOSDE').value) || 0;
 
-            // Calcular tributarios: Contribución Seguridad Social (12.5%), Impuesto UFT (5%), Contribución Especial (1.5%)
-            // Se aplican sobre el total de salario (directo + indirecto). Para los indirectos, debemos saber cuánto salario indirecto hay.
-            // La resolución dice que la base imponible es "la suma del salario directo e indirecto". 
-            // Pero no tenemos desglose del salario indirecto dentro de los gastos indirectos.
-            // Para simplificar, asumiremos que el salario indirecto es una proporción de los gastos indirectos totales. 
-            // O podemos pedir al usuario que especifique el salario indirecto. 
-            // Como es una simplificación, calcularemos los tributos sobre el salario directo + una estimación del salario indirecto.
-            // En la práctica, el usuario debería poder ingresar el salario indirecto por separado.
-            // Para esta demo, añadimos un campo adicional para salario indirecto (no en el formulario, pero lo calculamos como 40% de los gastos indirectos, a modo de ejemplo)
-            // Mejor: vamos a pedir al usuario que ingrese el salario indirecto en la sección de gastos indirectos. 
-            // Pero para no complicar el formulario, lo calculamos como 30% de los gastos indirectos (aproximación).
-            // Sin embargo, esto puede ser impreciso. Lo dejamos así para la demo, pero en una versión real se debería agregar un campo.
-            const salarioIndirectoEstimado = totalIndirectosIngresados * 0.30; // suposición
+            // Tributos (base = salario directo + estimación de salario indirecto (30% de los indirectos))
+            const salarioIndirectoEstimado = totalIndirectosIngresados * 0.30;
             const baseTributaria = totalSalarioDirecto + salarioIndirectoEstimado;
-            const contribucionSeguridad = baseTributaria * 0.125;
+            const contribSeguridad = baseTributaria * 0.125;
             const impuestoUFT = baseTributaria * 0.05;
-            const contribucionEspecial = baseTributaria * 0.015;
-            const totalTributarios = contribucionSeguridad + impuestoUFT + contribucionEspecial;
+            const contribEspecial = baseTributaria * 0.015;
+            const totalTributarios = contribSeguridad + impuestoUFT + contribEspecial;
 
-            // Calcular total de gastos (sin incluir utilidad)
-            const totalGastos = totalIndirectosIngresados + gastosFinancieros + financiamientoOSDE + totalTributarios;
+            // Mostrar tributos en los campos readonly
+            document.getElementById('contribSeguridad').value = contribSeguridad.toFixed(2);
+            document.getElementById('impuestoUFT').value = impuestoUFT.toFixed(2);
+            document.getElementById('contribEspecial').value = contribEspecial.toFixed(2);
+            document.getElementById('totalTributarios').value = totalTributarios.toFixed(2);
 
-            // Calcular costo total (materiales + otros directos + depreciación directa + salario directo)
+            // Costo total (sin gastos indirectos y otros)
             const costoTotal = totalInsumos + totalOtrosDirectos + totalDepreciacionDirecta + totalSalarioDirecto;
 
-            // Total de costos y gastos (antes de utilidad)
+            // Total de gastos (indirectos + financieros + OSDE + tributos)
+            const totalGastos = totalIndirectosIngresados + gastosFinancieros + financiamientoOSDE + totalTributarios;
+
+            // Total costos y gastos
             const totalCostosGastos = costoTotal + totalGastos;
 
-            // Calcular utilidad según tasa
+            // Utilidad
             let utilidad = totalCostosGastos * tasaUtilidad;
 
-            // Precio o tarifa
+            // Precio
             const precio = totalCostosGastos + utilidad;
-
-            // Precio unitario ajustado (si nivel de producción > 1, se divide)
             const precioUnitario = precio / nivelProduccion;
 
-            // Impuesto sobre ingresos (10% sobre el precio final, según el Excel, aunque la resolución no lo menciona, pero se puede incluir)
-            // Nota: el impuesto sobre ingresos no está en la resolución, pero el Excel lo incluye. Lo dejamos opcional.
-            const impuestoIngresos = precio * 0.10; // 10%
+            // Impuesto sobre ingresos (opcional, 10%)
+            const impuestoIngresos = precio * 0.10;
             const precioConImpuesto = precio + impuestoIngresos;
 
             // --- Mostrar resultados ---
             mostrarResultado({
-                empresa,
-                producto,
-                organismo,
-                codigo,
-                unidadMedida,
-                nivelProduccion,
+                empresa, producto, organismo, codigo, unidadMedida, nivelProduccion,
                 tipoActividad: textoActividad,
-                coeficienteIndirectos,
-                tasaUtilidad,
-                insumos,
-                totalInsumos,
-                salarios,
-                totalSalarioDirecto,
-                otrosDirectos: {
-                    transporteSum,
-                    alimentacion,
-                    transporteTra,
-                    combustible,
-                    arrendamiento,
-                    subcontratacion,
-                    montoOtros,
-                    total: totalOtrosDirectos
-                },
-                depreciaciones,
-                totalDepreciacionDirecta,
-                indirectos: {
-                    produccion: indProduccion,
-                    administracion: indAdministracion,
-                    distribucion: indDistribucion,
-                    total: totalIndirectosIngresados,
-                    tope: topeIndirectos
-                },
-                gastosFinancieros,
-                financiamientoOSDE,
-                tributarios: {
-                    contribucionSeguridad,
-                    impuestoUFT,
-                    contribucionEspecial,
-                    total: totalTributarios
-                },
-                costoTotal,
-                totalGastos,
-                totalCostosGastos,
-                utilidad,
-                precio,
-                precioUnitario,
-                impuestoIngresos,
-                precioConImpuesto
+                coeficienteIndirectos, tasaUtilidad,
+                insumos, totalInsumos,
+                salarios, totalSalarioDirecto,
+                otrosDirectos: { transporteSum, alimentacion, transporteTra, combustible, arrendamiento, subcontratacion, montoOtros, total: totalOtrosDirectos },
+                depreciaciones, totalDepreciacionDirecta,
+                indirectos: { produccion: indProduccion, administracion: indAdministracion, distribucion: indDistribucion, total: totalIndirectosIngresados, tope: topeIndirectos },
+                gastosFinancieros, financiamientoOSDE,
+                tributarios: { contribSeguridad, impuestoUFT, contribEspecial, total: totalTributarios },
+                costoTotal, totalGastos, totalCostosGastos, utilidad, precio, precioUnitario, impuestoIngresos, precioConImpuesto
             });
         }
 
-        // --- Mostrar resultados en pantalla ---
+        // --- Mostrar resultados en tabla estilo Excel ---
         function mostrarResultado(data) {
             const div = document.getElementById('fichaResultado');
-            // Construir tabla de resumen similar a la ficha de la resolución
             let html = `
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -804,7 +871,7 @@
                         <tr><td colspan="4" style="padding-left:20px;">Otros: ${data.otrosDirectos.montoOtros.toFixed(2)}</td></tr>
                         <tr><td colspan="2"><strong>Depreciación AFT</strong></td><td colspan="2">${data.totalDepreciacionDirecta.toFixed(2)}</td></tr>
                         <tr><td colspan="4" style="padding-left:20px;">${data.depreciaciones.map(d => `${d.descripcion}: ${d.cantidad} x ${d.valor} x ${d.tasa}% x ${d.horas}h = ${((((d.valor*d.tasa/100)/12)/24)*(d.horas/8)*d.cantidad).toFixed(2)}`).join('<br>')}</td></tr>
-                        <tr><td colspan="2"><strong>COSTO TOTAL (Material + Salario + Otros directos + Depreciación)</strong></td><td colspan="2">${data.costoTotal.toFixed(2)}</td></tr>
+                        <tr class="subtotal"><td colspan="2"><strong>COSTO TOTAL (Material + Salario + Otros directos + Depreciación)</strong></td><td colspan="2">${data.costoTotal.toFixed(2)}</td></tr>
                         <tr><th colspan="4">GASTOS INDIRECTOS</th></tr>
                         <tr><td colspan="2">Producción</td><td colspan="2">${data.indirectos.produccion.toFixed(2)}</td></tr>
                         <tr><td colspan="2">Generales y Administración</td><td colspan="2">${data.indirectos.administracion.toFixed(2)}</td></tr>
@@ -814,11 +881,11 @@
                         <tr><td colspan="2"><strong>Gastos Financieros</strong></td><td colspan="2">${data.gastosFinancieros.toFixed(2)}</td></tr>
                         <tr><td colspan="2"><strong>Financiamiento a OSDE</strong></td><td colspan="2">${data.financiamientoOSDE.toFixed(2)}</td></tr>
                         <tr><td colspan="2"><strong>Gastos Tributarios</strong></td><td colspan="2">${data.tributarios.total.toFixed(2)}</td></tr>
-                        <tr><td colspan="4" style="padding-left:20px;">Contribución Seguridad Social (12.5%): ${data.tributarios.contribucionSeguridad.toFixed(2)}</td></tr>
+                        <tr><td colspan="4" style="padding-left:20px;">Contribución Seguridad Social (12.5%): ${data.tributarios.contribSeguridad.toFixed(2)}</td></tr>
                         <tr><td colspan="4" style="padding-left:20px;">Impuesto UFT (5%): ${data.tributarios.impuestoUFT.toFixed(2)}</td></tr>
-                        <tr><td colspan="4" style="padding-left:20px;">Contribución Especial (1.5%): ${data.tributarios.contribucionEspecial.toFixed(2)}</td></tr>
-                        <tr><td colspan="2"><strong>TOTAL DE GASTOS (Indirectos + Financieros + OSDE + Tributarios)</strong></td><td colspan="2">${data.totalGastos.toFixed(2)}</td></tr>
-                        <tr><td colspan="2"><strong>TOTAL DE COSTOS Y GASTOS</strong></td><td colspan="2">${data.totalCostosGastos.toFixed(2)}</td></tr>
+                        <tr><td colspan="4" style="padding-left:20px;">Contribución Especial (1.5%): ${data.tributarios.contribEspecial.toFixed(2)}</td></tr>
+                        <tr class="subtotal"><td colspan="2"><strong>TOTAL DE GASTOS (Indirectos + Financieros + OSDE + Tributarios)</strong></td><td colspan="2">${data.totalGastos.toFixed(2)}</td></tr>
+                        <tr class="subtotal"><td colspan="2"><strong>TOTAL DE COSTOS Y GASTOS</strong></td><td colspan="2">${data.totalCostosGastos.toFixed(2)}</td></tr>
                         <tr><td colspan="2"><strong>Utilidad (${(data.tasaUtilidad*100).toFixed(0)}%)</strong></td><td colspan="2">${data.utilidad.toFixed(2)}</td></tr>
                         <tr class="total"><td colspan="2"><strong>PRECIO O TARIFA</strong></td><td colspan="2">${data.precio.toFixed(2)}</td></tr>
                         <tr><td colspan="2"><strong>PRECIO UNITARIO (por ${data.unidadMedida})</strong></td><td colspan="2">${data.precioUnitario.toFixed(2)}</td></tr>
@@ -833,7 +900,6 @@
             `;
             div.innerHTML = html;
             document.getElementById('resultado').style.display = 'block';
-            // Scroll al resultado
             document.getElementById('resultado').scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -842,7 +908,7 @@
 
         // --- Evento Limpiar ---
         btnLimpiar.addEventListener('click', function() {
-            // Resetear todos los campos a valores por defecto (vaciar o poner ceros)
+            // Resetear campos
             document.getElementById('empresa').value = '';
             document.getElementById('producto').value = '';
             document.getElementById('organismo').value = '';
@@ -862,7 +928,7 @@
             document.getElementById('indirectosDistribucion').value = '0';
             document.getElementById('gastosFinancieros').value = '0';
             document.getElementById('financiamientoOSDE').value = '0';
-            // Limpiar tablas (solo dejar una fila vacía en cada una)
+            // Limpiar tablas (dejar una fila vacía)
             bodyInsumos.innerHTML = '';
             bodySalario.innerHTML = '';
             bodyDepreciacion.innerHTML = '';
@@ -872,26 +938,16 @@
             document.getElementById('resultado').style.display = 'none';
             document.getElementById('alertaIndirectos').innerHTML = '';
             document.getElementById('topeIndirectos').textContent = '0.00';
+            document.getElementById('contribSeguridad').value = '';
+            document.getElementById('impuestoUFT').value = '';
+            document.getElementById('contribEspecial').value = '';
+            document.getElementById('totalTributarios').value = '';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // --- Ajustar tope en tiempo real al cambiar salario o coeficiente ---
-        // No es necesario, se recalcula al hacer clic en Calcular.
-
-        // --- Inicializar con datos de ejemplo ---
-        // Ya se cargaron con cargarDatosIniciales()
-        // Pero también podemos prellenar los otros campos con los valores del Excel
-        document.getElementById('transporteSuministros').value = '58500';
-        document.getElementById('alimentacion').value = '15600';
-        document.getElementById('transporteTrabajadores').value = '24750';
-        document.getElementById('combustible').value = '21294';
-        // Los gastos indirectos en el Excel eran: 4.0 (producción) = D25 = D21*0.3? No está claro. 
-        // En el Excel, los gastos indirectos de producción no están bien calculados. 
-        // Dejamos los valores por defecto en 0 para que el usuario los llene.
-        // Pero podemos sugerir algunos valores de ejemplo.
-        // Por ahora, dejamos que el usuario los ingrese.
-
+        // --- Inicializar con valores del Excel ---
+        // Ya cargados con cargarDatosIniciales()
         console.log('Aplicación lista. ¡Usa la Resolución 148/2023 para calcular tu ficha de costos!');
     </script>
 </body>
-                      </html>
+</html>
